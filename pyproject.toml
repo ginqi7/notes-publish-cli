@@ -7,4 +7,5 @@ requires-python = ">=3.9"
 dependencies = [
     "pyobjc-framework-scriptingbridge>=11.0",
     "pyobjc>=11.0",
+    "tzlocal>=5.3.1",
 ]

@@ -3,6 +3,8 @@ import json
 import argparse
 import re
 import os
+from datetime import datetime
+from tzlocal import get_localzone
 
 def find_folder(app: ScriptingBridge.SBApplication, name: str):
     for folder in app.folders():
@@ -27,15 +29,34 @@ def export_note(note, output):
     with open(file_path, 'w') as file:
         file.write(note.body())
 
+def query_creation_date(html):
+    pattern = r'>#(\d{4}-\d{2}-\d{2})<'
+    matches = re.search(pattern, html)
+    if matches:
+        return matches.group(1)
+
+def time_convert(time_str):
+    # Parse the string into a datetime object (UTC time)
+    utc_time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S %z")
+
+    # Retrieve the system timezone
+    system_timezone = get_localzone()
+
+    # Convert UTC time to system timezone time
+    return str(utc_time.astimezone(system_timezone))
+
 def export_note_meta(note, output):
     lan = which_language(note)
     directory = f'{output}/{lan}'
     file_path = f'{directory}/{note.name()}.json'
     os.makedirs(directory, exist_ok=True)
+    creation_date = query_creation_date(note.body())
+    if not creation_date:
+        creation_date = time_convert(str(note.creationDate()))
     with open(file_path, 'w') as file:
         meta = {
             "title": str(note.name()),
-            "create_date": str(note.creationDate())
+            "create_date": creation_date
         }
         json.dump(meta, file, indent=4)
 
