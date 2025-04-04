@@ -1,0 +1,10 @@
+[project]
+name = "notes-publish"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pyobjc-framework-scriptingbridge>=11.0",
+    "pyobjc>=11.0",
+]

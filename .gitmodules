@@ -1,0 +1,3 @@
+[submodule "jin-11ty-template"]
+	path = jin-11ty-template
+	url = git@github.com:ginqi7/jin-11ty-template.git
