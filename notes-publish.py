@@ -5,6 +5,9 @@ import re
 import os
 from datetime import datetime
 from tzlocal import get_localzone
+from readability import Document
+from bs4 import BeautifulSoup
+
 
 def find_folder(app: ScriptingBridge.SBApplication, name: str):
     for folder in app.folders():
@@ -21,13 +24,27 @@ def which_language(note):
         return "zh"
     return "en"
 
+def prettify_html(html):
+    tree = BeautifulSoup(html, features="lxml")
+    flag = True
+    while flag:
+        flag = False
+        for x in tree.find_all():
+            if (not x.contents) and len(x.get_text(strip=True)) == 0 and x.name not in ['img']:
+                flag = True
+                x.extract()
+
+    return tree.prettify()
+
+
 def export_note(note, output):
     lan = which_language(note)
     directory = f'{output}/{lan}'
     file_path = f'{directory}/{note.name()}.html'
     os.makedirs(directory, exist_ok=True)
     with open(file_path, 'w') as file:
-        file.write(note.body())
+        good_html = prettify_html(note.body())
+        file.write(good_html)
 
 def query_creation_date(html):
     pattern = r'>#(\d{4}-\d{2}-\d{2})<'

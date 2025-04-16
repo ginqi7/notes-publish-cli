@@ -8,4 +8,5 @@ dependencies = [
     "pyobjc-framework-scriptingbridge>=11.0",
     "pyobjc>=11.0",
     "tzlocal>=5.3.1",
+    "bs4>=0.0.2",
 ]
